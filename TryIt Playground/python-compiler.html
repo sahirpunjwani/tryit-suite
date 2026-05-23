@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Console Compiler | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+      --error: #ef476f;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 15px;
+    }
+
+    .pane-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    textarea {
+      flex: 1;
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+    }
+
+    .terminal-out {
+      flex: 1;
+      background: #000814;
+      color: var(--success);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .terminal-out.error-mode {
+      color: var(--error);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-run {
+      background: var(--success);
+      color: var(--bg);
+    }
+
+    .status {
+      font-size: 12px;
+      color: #8d99ae;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt Python Compiler</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    <div class="pane">
+      <div class="pane-header">
+        <span>Python Code Editor</span>
+      </div>
+      <textarea id="code-editor" spellcheck="false" placeholder="Write your Python code here...">print("Hi")
+
+name = "Bro"
+print("Welcome back,", name)
+
+for i in range(3):
+    print("Loop number:", i)</textarea>
+      <div class="actions">
+        <button class="btn btn-run" onclick="runPython()">⚡ Run Code</button>
+        <button class="btn" onclick="clearEditor()">Clear</button>
+      </div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">
+        <span>Console Terminal Output</span>
+        <span class="status" id="run-status">Status: Ready</span>
+      </div>
+      <div id="console-terminal" class="terminal-out">>>> Output will appear here...</div>
+      <div class="actions">
+        <button class="btn" onclick="clearTerminal()">Clear Console</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function runPython() {
+      const code = document.getElementById('code-editor').value;
+      const terminal = document.getElementById('console-terminal');
+      const status = document.getElementById('run-status');
+      
+      terminal.classList.remove('error-mode');
+      status.innerText = "Status: Running...";
+      
+      let outputLogs = [];
+      let variables = {};
+
+      // Custom line-by-line runtime parser simulation
+      const lines = code.split('\n');
+      
+      try {
+        for (let i = 0; i < lines.length; i++) {
+          let line = lines[i].trim();
+          
+          // Skip empty lines or plain comments
+          if (!line || line.startsWith('#')) continue;
+
+          // 1. Handle print() statement
+          if (line.startsWith('print(') && line.endsWith(')')) {
+            let innerContent = line.substring(6, line.length - 1);
+            
+            // Handle multiple comma-separated arguments inside print
+            let args = innerContent.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
+            let printLine = args.map(arg => {
+              arg = arg.trim();
+              // If it's a quoted string literal
+              if ((arg.startsWith('"') && arg.endsWith('"')) || (arg.startsWith("'") && arg.endsWith("'"))) {
+                return arg.slice(1, -1);
+              }
+              // If it's an existing variable name
+              if (variables.hasOwnProperty(arg)) {
+                return variables[arg];
+              }
+              // Fallback to literal evaluating or numeric structures
+              try { return eval(arg); } catch(e) { return arg; }
+            }).join(' ');
+
+            outputLogs.push(printLine);
+          }
+          // 2. Handle simple for loop syntax simulation: for i in range(X):
+          else if (line.startsWith('for ') && line.includes(' in range(') && line.endsWith(':')) {
+            let varMatch = line.match(/for\s+(\w+)\s+in\s+range\s*\(\s*(\d+)\s*\)\s*:/);
+            if (varMatch) {
+              let loopVar = varMatch[1];
+              let limit = parseInt(varMatch[2]);
+              
+              // Find loop body blocks (lines that follow and are indented)
+              let loopLines = [];
+              let j = i + 1;
+              while (j < lines.length && (lines[j].startsWith('    ') || lines[j].startsWith('\t') || !lines[j].trim())) {
+                if (lines[j].trim()) loopLines.push(lines[j].trim());
+                j++;
+              }
+              
+              // Run the inner loop blocks sequentially
+              for (let step = 0; step < limit; step++) {
+                variables[loopVar] = step;
+                for (let k = 0; k < loopLines.length; k++) {
+                  let subLine = loopLines[k];
+                  if (subLine.startsWith('print(') && subLine.endsWith(')')) {
+                    let inner = subLine.substring(6, subLine.length - 1);
+                    let args = inner.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    let printed = args.map(arg => {
+                      arg = arg.trim();
+                      if ((arg.startsWith('"') && arg.endsWith('"')) || (arg.startsWith("'") && arg.endsWith("'"))) return arg.slice(1, -1);
+                      if (variables.hasOwnProperty(arg)) return variables[arg];
+                      return arg;
+                    }).join(' ');
+                    outputLogs.push(printed);
+                  }
+                }
+              }
+              i = j - 1; // Advance the pointer past loop block elements
+            }
+          }
+          // 3. Handle Variable assignments: x = value
+          else if (line.includes('=')) {
+            let parts = line.split('=');
+            let varName = parts[0].trim();
+            let varVal = parts[1].trim();
+
+            // Check if string literal assignment
+            if ((varVal.startsWith('"') && varVal.endsWith('"')) || (varVal.startsWith("'") && varVal.endsWith("'"))) {
+              variables[varName] = varVal.slice(1, -1);
+            } else {
+              // Numbers or direct calculations
+              try { variables[varName] = eval(varVal); } catch(e) { variables[varName] = varVal; }
+            }
+          }
+        }
+
+        terminal.innerText = outputLogs.length > 0 ? outputLogs.join('\n') : ">>> Program executed with no output.";
+        status.innerText = "Status: Success";
+
+      } catch (err) {
+        terminal.classList.add('error-mode');
+        terminal.innerText = "Python SyntaxError: Failed parsing script configuration structure loops.";
+        status.innerText = "Status: Error";
+      }
+    }
+
+    function clearEditor() {
+      document.getElementById('code-editor').value = "";
+    }
+
+    function clearTerminal() {
+      document.getElementById('console-terminal').innerText = ">>> Console cleared.";
+      document.getElementById('console-terminal').classList.remove('error-mode');
+      document.getElementById('run-status').innerText = "Status: Ready";
+    }
+  </script>
+</body>
+</html>

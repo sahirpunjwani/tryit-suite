@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regex Pattern Tester | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+      --error: #ef476f;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 30px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .workspace {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    textarea { height: 100px; resize: none; }
+
+    .match-box {
+      background: #000814;
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 4px;
+      font-family: monospace;
+      min-height: 40px;
+      white-space: pre-wrap;
+    }
+
+    mark {
+      background: rgba(6, 214, 160, 0.4);
+      color: #fff;
+      border-bottom: 2px solid var(--success);
+      padding: 2px 0;
+    }
+
+    .btn-group { display: flex; gap: 10px; }
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt Regex Tester</a>
+    <a href="index.html" class="btn" style="text-decoration:none;">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    <div class="workspace">
+      <label style="font-weight: bold; color: var(--accent);">Preset Patterns:</label>
+      <div class="btn-group">
+        <button class="btn" onclick="setRegex('[0-9]+', 'User ID: 45872, Order: 9021')">Numbers Only</button>
+        <button class="btn" onclick="setRegex('[a-zA-Z]+', 'Hello World 123')">Letters Only</button>
+      </div>
+
+      <label style="font-weight: bold; color: var(--accent); margin-top: 10px;">Expression Pattern (Regex)</label>
+      <input type="text" id="regex-pattern" value="[0-9]+" oninput="testRegex()">
+
+      <label style="font-weight: bold; color: var(--accent);">Test Text Material</label>
+      <textarea id="regex-text" oninput="testRegex()">The user account balance is 450 dollars and id is 89.</textarea>
+
+      <label style="font-weight: bold; color: var(--success);">Live Match Mapping Results</label>
+      <div id="regex-output" class="match-box"></div>
+    </div>
+  </div>
+
+  <script>
+    function setRegex(pattern, sampleText) {
+      document.getElementById('regex-pattern').value = pattern;
+      document.getElementById('regex-text').value = sampleText;
+      testRegex();
+    }
+
+    function testRegex() {
+      const patternInput = document.getElementById('regex-pattern').value;
+      const textInput = document.getElementById('regex-text').value;
+      const output = document.getElementById('regex-output');
+
+      if (!patternInput || !textInput) {
+        output.innerText = textInput;
+        return;
+      }
+
+      try {
+        const regex = new RegExp(`(${patternInput})`, 'g');
+        // Safely screen out raw HTML characters to prevent rendering bugs
+        const cleanText = textInput.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        
+        const highlighted = cleanText.replace(regex, "<mark>$1</mark>");
+        output.innerHTML = highlighted || cleanText;
+      } catch (err) {
+        output.innerHTML = `<span style="color:var(--error)">Invalid Regex Expression Syntax</span>`;
+      }
+    }
+    testRegex();
+  </script>
+</body>
+</html>

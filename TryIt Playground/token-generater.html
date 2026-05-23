@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT Token Generator | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 30px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-workspace {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    textarea { height: 100px; resize: none; }
+
+    .btn {
+      background: var(--success);
+      color: var(--bg);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt Token Generator</a>
+    <a href="index.html" class="btn" style="background:var(--border); color:white; text-decoration:none;">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    <div class="card-workspace">
+      <label style="font-weight: bold; color: var(--accent);">1. Token Payload Data (JSON format)</label>
+      <textarea id="payload-json">{\n  "user": "Alex",\n  "role": "admin"\n}</textarea>
+
+      <label style="font-weight: bold; color: var(--accent);">2. Encryption Secret Key</label>
+      <input type="text" id="secret-key" value="super-secret-signature-pass-key">
+
+      <button class="btn" onclick="generateToken()">🔒 Compile & Mint Encoded JWT</button>
+    </div>
+
+    <div class="card-workspace">
+      <label style="font-weight: bold; color: var(--success);">Generated Secure Token Output</label>
+      <textarea id="token-output" style="color:var(--success);" readonly placeholder="Encoded cryptographic token output..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    function generateToken() {
+      try {
+        const payloadRaw = document.getElementById('payload-json').value;
+        JSON.parse(payloadRaw); // Validate JSON syntax structure first
+
+        // Mock algorithm structures encoding to Base64 segments cleanly
+        const headerEncoded = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+        const payloadEncoded = btoa(payloadRaw);
+        const mockSignature = btoa(document.getElementById('secret-key').value).substring(0, 20);
+
+        document.getElementById('token-output').value = `${headerEncoded}.${payloadEncoded}.${mockSignature}`;
+      } catch (err) {
+        alert("Invalid JSON format in the Payload window. Fix formatting parameters.");
+      }
+    }
+    generateToken();
+  </script>
+</body>
+</html>

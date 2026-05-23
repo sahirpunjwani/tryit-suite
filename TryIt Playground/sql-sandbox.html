@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Query Sandbox | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+      --error: #ef476f;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      gap: 15px;
+    }
+
+    .pane-header {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+    .btn-run { background: var(--success); color: var(--bg); }
+
+    /* Interactive Table Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #000814;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(78, 168, 222, 0.2);
+      color: var(--accent);
+    }
+
+    .error-box {
+      color: var(--error);
+      background: rgba(239, 71, 111, 0.1);
+      padding: 12px;
+      border-radius: 4px;
+      border-left: 4px solid var(--error);
+      display: none;
+    }
+
+    @media (max-width: 768px) { .container { flex-direction: column; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt SQL Sandbox</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    
+    <div class="pane">
+      <div class="pane-header">Write Database Commands</div>
+      
+      <p style="margin:0; font-size:13px; color:#8d99ae;">Quick templates for beginners (Click to fill code box):</p>
+      <div class="btn-group">
+        <button class="btn" onclick="setQuery('all')">Show Everyone</button>
+        <button class="btn" onclick="setQuery('devs')">Filter Developers</button>
+      </div>
+
+      <textarea id="sql-input">SELECT * FROM users;</textarea>
+      
+      <div class="btn-group">
+        <button class="btn btn-run" onclick="runSQL()">⚡ Run SQL Query</button>
+        <button class="btn" onclick="formatSQL()">✨ Format Code</button>
+      </div>
+      <div id="error-log" class="error-box"></div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">Live Database Table Result</div>
+      <div style="overflow-x: auto;">
+        <table id="db-table">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th></tr>
+          </thead>
+          <tbody id="db-rows">
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Static dataset representing our database structure mock table
+    const masterData = [
+      { id: 1, name: "Alice Smith", role: "Developer", status: "Active" },
+      { id: 2, name: "Bob Jones", role: "Designer", status: "Away" },
+      { id: 3, name: "Charlie Diaz", role: "Developer", status: "Active" },
+      { id: 4, name: "Diana Prince", role: "Manager", status: "Active" }
+    ];
+
+    function setQuery(type) {
+      const input = document.getElementById('sql-input');
+      if (type === 'all') input.value = "SELECT * FROM users;";
+      if (type === 'devs') input.value = "SELECT name, role FROM users \nWHERE role = 'Developer';";
+      runSQL();
+    }
+
+    function formatSQL() {
+      const input = document.getElementById('sql-input');
+      let clean = input.value.trim();
+      // Simple capitalization trick for beginner visualization
+      clean = clean.replace(/select/i, "SELECT").replace(/from/i, "FROM").replace(/where/i, "WHERE");
+      input.value = clean;
+    }
+
+    function runSQL() {
+      const query = document.getElementById('sql-input').value.toLowerCase().replace(/;/g, '').trim();
+      const rowsBox = document.getElementById('db-rows');
+      const errorLog = document.getElementById('error-log');
+      
+      errorLog.style.display = "none";
+      rowsBox.innerHTML = "";
+
+      try {
+        if (!query.startsWith("select")) {
+          throw new Error("Syntax Error: For security and safety, this sandbox table only supports 'SELECT' query lookups.");
+        }
+
+        // Basic query engine simulator variables
+        const displayDevsOnly = query.includes("developer");
+        const limitFields = query.includes("name, role") || query.includes("name,role");
+
+        let filtered = displayDevsOnly ? masterData.filter(d => d.role === "Developer") : masterData;
+
+        if (filtered.length === 0) {
+          rowsBox.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#8d99ae;">No rows matching dataset constraints discovered.</td></tr>`;
+          return;
+        }
+
+        filtered.forEach(item => {
+          const row = document.createElement('tr');
+          if (limitFields) {
+            row.innerHTML = `<td>-</td><td>${item.name}</td><td>${item.role}</td><td>-</td>`;
+          } else {
+            row.innerHTML = `<td>${item.id}</td><td>${item.name}</td><td>${item.role}</td><td>${item.status}</td>`;
+          }
+          rowsBox.appendChild(row);
+        });
+
+      } catch (err) {
+        errorLog.innerText = err.message;
+        errorLog.style.display = "block";
+      }
+    }
+
+    // Initialize sandbox setup
+    runSQL();
+  </script>
+</body>
+</html>

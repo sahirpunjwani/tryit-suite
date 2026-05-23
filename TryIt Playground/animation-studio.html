@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Animation Studio | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+      --error: #ef476f;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      gap: 15px;
+    }
+
+    .pane-header {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .timeline-block {
+      background: #000814;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid var(--accent);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .timeline-title {
+      font-weight: bold;
+      font-size: 14px;
+      color: #8d99ae;
+    }
+
+    .option-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: 4px;
+      flex: 1;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Animation Theater Screen Stage */
+    .stage {
+      background: #000814;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+    }
+
+    #actor {
+      font-size: 45px;
+      position: absolute;
+      left: 40px;
+      transition: transform 0.1s linear, background-color 0.1s, border-radius 0.1s;
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+    }
+
+    .code-display {
+      background: #000814;
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--success);
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .btn:hover { background: var(--accent); color: var(--bg); }
+    .btn-run { background: var(--success); color: var(--bg); }
+    .btn-run:hover { background: #0df2b7; }
+
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt Animation Studio</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    
+    <div class="pane">
+      <div class="pane-header">Build Your Cartoon Timeline</div>
+      
+      <div class="option-row">
+        <label style="line-height:35px; font-weight:600;">Choose Actor Character:</label>
+        <select id="select-actor" onchange="changeActor()">
+          <option value="🚀">Rocket Ships (🚀)</option>
+          <option value="👻">Spooky Ghost (👻)</option>
+          <option value="⚽">Soccer Ball (⚽)</option>
+          <option value="💎">Shiny Diamond (💎)</option>
+        </select>
+      </div>
+
+      <div class="timeline-block" style="border-left-color: #ef476f;">
+        <div class="timeline-title">🎬 START TIME (0%)</div>
+        <div class="option-row">
+          <select id="start-pos">
+            <option value="left">Stay on the Left Side</option>
+            <option value="center">Start in the Middle</option>
+          </select>
+          <select id="start-style">
+            <option value="none">Normal Look</option>
+            <option value="spin">Tilted Angle</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="timeline-block" style="border-left-color: var(--success);">
+        <div class="timeline-title">🏁 END TIME (100%)</div>
+        <div class="option-row">
+          <select id="end-pos">
+            <option value="right">Move to the Right Side</option>
+            <option value="center">Slide to the Middle</option>
+            <option value="updown">Bounce Up and Down</option>
+          </select>
+          <select id="end-style">
+            <option value="spin">Spin 360 Degrees</option>
+            <option value="grow">Grow Double Size</option>
+            <option value="glow">Add Neon Background Glow</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-run" onclick="playCartoon()">🎬 Action! Play Animation</button>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">Animation Cinema Theater Stage</div>
+      
+      <div class="stage">
+        <div id="actor">🚀</div>
+      </div>
+
+      <label style="font-weight: 600; font-size: 14px;">How a Web Browser Reads This Timeline in CSS:</label>
+      <div id="code-box" class="code-display">Click "Action!" to generate timeline logic elements...</div>
+    </div>
+
+  </div>
+
+  <style id="dynamic-animation-zone"></style>
+
+  <script>
+    function changeActor() {
+      const glyph = document.getElementById('select-actor').value;
+      document.getElementById('actor').innerText = glyph;
+    }
+
+    function playCartoon() {
+      const actor = document.getElementById('actor');
+      const sPos = document.getElementById('start-pos').value;
+      const sStyle = document.getElementById('start-style').value;
+      const ePos = document.getElementById('end-pos').value;
+      const eStyle = document.getElementById('end-style').value;
+      const dynamicStyles = document.getElementById('dynamic-animation-zone');
+
+      // Clear any previous animations running on the actor element
+      actor.style.animation = 'none';
+      actor.offsetHeight; // Reset browser DOM flow trigger line
+
+      // Build out the dynamic 0% CSS text string
+      let css0 = "left: 40px; transform: scale(1) rotate(0deg); background: transparent; border-radius: 0;";
+      if (sPos === 'center') css0 = "left: 45%; transform: scale(1) rotate(0deg);";
+      if (sStyle === 'spin') css0 += " transform: rotate(-45deg);";
+
+      // Build out the dynamic 100% CSS text string
+      let css100 = "";
+      if (ePos === 'right') css100 += "left: calc(100% - 100px); top: auto;";
+      if (ePos === 'center') css100 += "left: 45%; top: auto;";
+      if (ePos === 'updown') css100 += "left: 40px; top: 20px; transform: translateY(80px);";
+
+      if (eStyle === 'spin') css100 += " transform: rotate(360deg);";
+      if (eStyle === 'grow') css100 += " transform: scale(1.6);";
+      if (eStyle === 'glow') css100 += " background-color: rgba(78, 168, 222, 0.4); border-radius: 50%; box-shadow: 0 0 15px #4ea8de;";
+
+      // Inject the keyframes structural stylesheet directly inside active document head space
+      dynamicStyles.innerHTML = `
+        @keyframes cartoonRun {
+          0% { ${css0} }
+          100% { ${css100} }
+        }
+      `;
+
+      // Assign our custom generated keyframe directly onto our target actor item
+      actor.style.animation = "cartoonRun 2s ease-in-out infinite alternate";
+
+      // Display clean, readable code explanation to the beginner
+      document.getElementById('code-box').innerText = `@keyframes cartoonRun {
+  0% {
+    /* What the actor looks like at the start */
+    ${css0.replace(/; /g, ';\n    ')}
+  }
+  100% {
+    /* What the actor changes to over time */
+    ${css100.replace(/; /g, ';\n    ')}
+  }
+}
+
+.my-character {
+  /* Tells browser to play this loop over 2 seconds back and forth forever */
+  animation: cartoonRun 2s ease-in-out infinite alternate;
+}`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Console Compiler | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+      --error: #ef476f;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 15px;
+    }
+
+    .pane-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    textarea {
+      flex: 1;
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+    }
+
+    .terminal-out {
+      flex: 1;
+      background: #000814;
+      color: var(--success);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .terminal-out.error-mode {
+      color: var(--error);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-run {
+      background: var(--success);
+      color: var(--bg);
+    }
+
+    .status {
+      font-size: 12px;
+      color: #8d99ae;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt JS Compiler</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    <div class="pane">
+      <div class="pane-header">
+        <span>JavaScript Script Editor</span>
+      </div>
+      <textarea id="code-editor" spellcheck="false" placeholder="Write your JavaScript code here...">// Quick JavaScript Code Test
+console.log("Hi");
+
+let user = { name: "Bro", role: "Developer" };
+console.log("User details:", user);
+
+for(let i = 0; i < 3; i++) {
+    console.log(`Loop index: ${i}`);
+}</textarea>
+      <div class="actions">
+        <button class="btn btn-run" onclick="runJS()">⚡ Run Code</button>
+        <button class="btn" onclick="clearEditor()">Clear</button>
+      </div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">
+        <span>Console Output Terminal</span>
+        <span class="status" id="run-status">Status: Ready</span>
+      </div>
+      <div id="console-terminal" class="terminal-out">>>> Console output logs appear right here...</div>
+      <div class="actions">
+        <button class="btn" onclick="clearTerminal()">Clear Terminal</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function runJS() {
+      const code = document.getElementById('code-editor').value;
+      const terminal = document.getElementById('console-terminal');
+      const statusLabel = document.getElementById('run-status');
+      
+      terminal.classList.remove('error-mode');
+      statusLabel.innerText = "Status: Running...";
+      
+      let logs = [];
+
+      // Intercept and rewrite console.log window hooks to push data onto our terminal view safely
+      const customConsoleLog = (...args) => {
+        const processedArgs = args.map(arg => {
+          if (typeof arg === 'object' && arg !== null) {
+            try {
+              return JSON.stringify(arg); // Clean string conversions for arrays/objects
+            } catch (e) {
+              return '[Object]';
+            }
+          }
+          return String(arg);
+        });
+        logs.push(processedArgs.join(' '));
+      };
+
+      // Isolate code run by packing execution hooks inside a dedicated container boundary block
+      try {
+        const executorFunction = new Function('console', code);
+        
+        // Pass our custom intercepting object as the global console tracker variable context
+        executorFunction({ log: customConsoleLog });
+
+        if (logs.length === 0) {
+          terminal.innerText = ">>> Script executed successfully, but returned no console logs.";
+        } else {
+          terminal.innerText = logs.join('\n');
+        }
+        statusLabel.innerText = "Status: Success";
+
+      } catch (err) {
+        terminal.classList.add('error-mode');
+        terminal.innerText = `${err.name}: ${err.message}`;
+        statusLabel.innerText = "Status: Error";
+      }
+    }
+
+    function clearEditor() {
+      document.getElementById('code-editor').value = "";
+    }
+
+    function clearTerminal() {
+      document.getElementById('console-terminal').innerText = ">>> Console cleared.";
+      document.getElementById('console-terminal').classList.remove('error-mode');
+      document.getElementById('run-status').innerText = "Status: Ready";
+    }
+  </script>
+</body>
+</html>

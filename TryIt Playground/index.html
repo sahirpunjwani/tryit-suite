@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TryIt Suite | Developer Hub</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 24px;
+      color: var(--accent);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-badge {
+      font-size: 12px;
+      background: rgba(6, 214, 160, 0.1);
+      color: var(--success);
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(6, 214, 160, 0.3);
+    }
+
+    .hero-section {
+      text-align: center;
+      padding: 60px 20px 40px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-section h1 {
+      font-size: 42px;
+      margin: 0 0 15px 0;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-section h1 span {
+      color: var(--accent);
+    }
+
+    .hero-section p {
+      color: #8d99ae;
+      font-size: 18px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .grid-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 40px 60px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-desc {
+      color: #8d99ae;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      flex: 1;
+    }
+
+    .card-action {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .card.disabled:hover {
+      transform: none;
+      border-color: var(--border);
+      box-shadow: none;
+    }
+
+    .card.disabled::before {
+      background: #8d99ae;
+    }
+
+    .card.disabled .card-action {
+      color: #8d99ae;
+    }
+
+    .badge-upcoming {
+      font-size: 10px;
+      background: #3a506b;
+      color: var(--text);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: #5c677d;
+      background: #070d20;
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 15px 20px; }
+      .grid-container { padding: 20px; }
+      .hero-section h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="#" class="logo">⚡ TryIt Suite</a>
+    <span class="status-badge">● Systems Operational</span>
+  </header>
+
+  <div class="hero-section">
+    <h1>All Your Tools. <span>One Interface.</span></h1>
+    <p>Welcome to your workspace. Compile web setups, optimize assets, or obfuscate deployment code seamlessly in real-time tabs.</p>
+  </div>
+
+  <div class="grid-container">
+    
+    <a href="html-compiler.html" target="_blank" class="card">
+      <div class="card-icon">💻</div>
+      <div class="card-title">Frontend Compiler</div>
+      <div class="card-desc">Write, format, and render HTML, CSS, and JavaScript instantly in a real-time responsive browser sandbox simulator workspace.</div>
+      <div class="card-action">Launch Editor &rarr;</div>
+    </a>
+
+    <a href="tool.html" target="_blank" class="card">
+      <div class="card-icon">⚙️</div>
+      <div class="card-title">Minifier & Obfuscator</div>
+      <div class="card-desc">Shrink asset payloads or encode core logic using sandbox-safe Base64 wrappers designed for HTML layout blocks, CSS layers, and JS scripts.</div>
+      <div class="card-action">Open Toolkit &rarr;</div>
+    </a>
+
+    <a href="python-compiler.html" target="_blank" class="card">
+  <div class="card-icon">🐍</div>
+  <div class="card-title">Python Compiler</div>
+  <div class="card-desc">Execute real Python algorithms and data structures entirely client-side via sandbox-secure WebAssembly terminal contexts.</div>
+  <div class="card-action">Launch Compiler &rarr;</div>
+</a>
+
+    <a href="js-compiler.html" target="_blank" class="card">
+  <div class="card-icon">⚡</div>
+  <div class="card-title">JavaScript Compiler</div>
+  <div class="card-desc">Execute scripts, arrays, logic chains, and track objects natively right inside your viewport panel with isolated local consoles.</div>
+  <div class="card-action">Launch Compiler &rarr;</div>
+</a>
+
+<a href="color-sandbox.html" target="_blank" class="card">
+  <div class="card-icon">🎨</div>
+  <div class="card-title">Color Palette Sandbox</div>
+  <div class="card-desc">Generate math-based color harmonies and run standard real-time WCAG access text legibility ratio contrast checks.</div>
+  <div class="card-action">Launch Sandbox &rarr;</div>
+</a>
+
+<a href="box-model.html" target="_blank" class="card">
+  <div class="card-icon">📦</div>
+  <div class="card-title">CSS Box Model Simulator</div>
+  <div class="card-desc">Move sliders to see how Padding, Borders, and Margins change a webpage element visually, with ready-to-copy CSS code.</div>
+  <div class="card-action">Play with Boxes &rarr;</div>
+</a>
+
+<a href="animation-studio.html" target="_blank" class="card">
+  <div class="card-icon">🎬</div>
+  <div class="card-title">CSS Animation Studio</div>
+  <div class="card-desc">No coding required. Pick a character, configure custom event timeline percentages, and instantly see how CSS keyframes create movement.</div>
+  <div class="card-action">Animate Characters &rarr;</div>
+</a>
+
+<a href="sql-sandbox.html" target="_blank" class="card">
+      <div class="card-icon">🗄️</div>
+      <div class="card-title">SQL Query Sandbox</div>
+      <div class="card-desc">Interact with a mock database user table using simple SELECT commands without needing a backend server database.</div>
+      <div class="card-action">Open Sandbox &rarr;</div>
+    </a>
+
+    <a href="json-viewer.html" target="_blank" class="card">
+      <div class="card-icon">🌳</div>
+      <div class="card-title">JSON Tree Unscrambler</div>
+      <div class="card-desc">Paste messy API text strings to highlight formatting mistakes and see your key variables structural branch levels clearly.</div>
+      <div class="card-action">Launch Tree Viewer &rarr;</div>
+    </a>
+
+    <a href="url-handler.html" target="_blank" class="card">
+      <div class="card-icon">🔗</div>
+      <div class="card-title">URL Link Encoder</div>
+      <div class="card-desc">Convert plain English spaces and web parameters into link-safe text formats instantly to see how website paths compute.</div>
+      <div class="card-action">Launch Converter &rarr;</div>
+    </a>
+
+    <a href="jwt-debugger.html" target="_blank" class="card">
+      <div class="card-icon">🔑</div>
+      <div class="card-title">JWT Decoder Studio</div>
+      <div class="card-desc">Paste encrypted web tokens to visually separate header credentials and parse protected JSON user payloads safely.</div>
+      <div class="card-action">Launch Debugger &rarr;</div>
+    </a>
+
+    <a href="diff-checker.html" target="_blank" class="card">
+      <div class="card-icon">🔍</div>
+      <div class="card-title">Text Diff Checker</div>
+      <div class="card-desc">Compare two separate code blocks side-by-side to pinpoint missing parameters and trace line insertions instantly.</div>
+      <div class="card-action">Compare Scripts &rarr;</div>
+    </a>
+
+    <a href="regex-tester.html" target="_blank" class="card">
+      <div class="card-icon">🧩</div>
+      <div class="card-title">Regex Match Mapper</div>
+      <div class="card-desc">Test pattern matching scripts and look up configurations to isolate strings or validate data inputs instantly.</div>
+      <div class="card-action">Launch Tester &rarr;</div>
+    </a>
+
+    <a href="token-generator.html" target="_blank" class="card">
+      <div class="card-icon">🔐</div>
+      <div class="card-title">JWT Token Mint</div>
+      <div class="card-desc">Compile text payloads and custom passkeys into verified, base64 secure web signatures for auth loop simulations.</div>
+      <div class="card-action">Mint Tokens &rarr;</div>
+    </a>
+
+    <a href="markdown-compiler.html" target="_blank" class="card">
+      <div class="card-icon">📝</div>
+      <div class="card-title">Markdown Document Editor</div>
+      <div class="card-desc">Write plaintext layout structures using classic markdown tags to see them instantly compile into styled HTML web sheets.</div>
+      <div class="card-action">Compile Docs &rarr;</div>
+    </a>
+
+
+    <a href="csv-converter.html" target="_blank" class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title">CSV Row Converter</div>
+      <div class="card-desc">Transform raw spreadsheet cells and data lists into standard structural array arrays designed for backend script components.</div>
+      <div class="card-action">Convert Columns &rarr;</div>
+    </a>
+
+  </div>
+
+  <footer>
+    &copy; 2026 TryIt Tools Environment Dashboard Setup. Powered by Netlify.
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Encoder / Decoder | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 30px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-workspace {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+    .btn-action { background: var(--success); color: var(--bg); }
+
+    .explanation-tag {
+      font-size: 13px;
+      color: #8d99ae;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt URL Handler</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    
+    <div class="card-workspace">
+      <label style="font-weight: bold; color: var(--accent);">Normal Human-Readable Text String</label>
+      <textarea id="raw-text" placeholder="Type letters with spaces and symbols here...">Hello World! Coffee & Coding? Check it out.</textarea>
+      
+      <div class="actions">
+        <button class="btn btn-action" onclick="encodeData()">🔒 Encode to Browser Safe Link</button>
+      </div>
+      <p class="explanation-tag">Notice how the application converts spaces into <code>%20</code> and question marks into <code>%3F</code> automatically so it never breaks links.</p>
+    </div>
+
+    <div class="card-workspace">
+      <label style="font-weight: bold; color: var(--success);">Browser-Encoded URL Link Output</label>
+      <textarea id="encoded-text" placeholder="The encrypted string will compile over here..."></textarea>
+      
+      <div class="actions">
+        <button class="btn" onclick="decodeData()">🔓 Decode Back to Normal Text</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function encodeData() {
+      const input = document.getElementById('raw-text').value;
+      document.getElementById('encoded-text').value = encodeURIComponent(input);
+    }
+
+    function decodeData() {
+      const input = document.getElementById('encoded-text').value;
+      try {
+        document.getElementById('raw-text').value = decodeURIComponent(input);
+      } catch (err) {
+        alert("Cannot decode string. Please provide valid URL parameter symbols.");
+      }
+    }
+
+    // Run first sample computation instantly on boot
+    encodeData();
+  </script>
+</body>
+</html>

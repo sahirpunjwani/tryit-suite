@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diff Checker | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --added-bg: rgba(6, 214, 160, 0.2);
+      --added-border: #06d6a0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      gap: 15px;
+    }
+
+    .pane-header {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      flex: 1;
+    }
+
+    textarea {
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+    }
+
+    .output-comparison {
+      background: #000814;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .diff-line {
+      margin: 0;
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    .line-added { background: var(--added-bg); border-left: 3px solid var(--added-border); color: #fff; }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+
+    @media (max-width: 768px) { .container { flex-direction: column; } .split-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt Diff Checker</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    
+    <div class="pane">
+      <div class="pane-header">Input Code Comparison Scripts</div>
+      <div class="split-grid">
+        <textarea id="text-original" placeholder="Paste original base code line elements here...">const app = "TryIt";\nconsole.log(app);</textarea>
+        <textarea id="text-modified" placeholder="Paste updated custom code updates here...">const app = "TryIt Suite";\nconsole.log(app);\n// Done checking differences</textarea>
+      </div>
+      <button class="btn" onclick="checkDifferences()">🔍 Analyze Comparison Differences</button>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">Line-by-Line Changes Map</div>
+      <div id="diff-output" class="output-comparison">Click compare to map modifications running inside the code scripts block panels...</div>
+    </div>
+
+  </div>
+
+  <script>
+    function checkDifferences() {
+      const originalLines = document.getElementById('text-original').value.split('\n');
+      const modifiedLines = document.getElementById('text-modified').value.split('\n');
+      const output = document.getElementById('diff-output');
+
+      output.innerHTML = "";
+
+      // Evaluate lines running line by line constraints
+      modifiedLines.forEach((modLine, index) => {
+        const linePara = document.createElement('p');
+        linePara.className = "diff-line";
+
+        // Simple lookup script: If original script didn't have it, highlight it as added
+        if (!originalLines.includes(modLine)) {
+          linePara.className += " line-added";
+          linePara.innerText = `+ Line ${index + 1}: ${modLine}`;
+        } else {
+          linePara.innerText = `  Line ${index + 1}: ${modLine}`;
+        }
+        output.appendChild(linePara);
+      });
+    }
+  </script>
+</body>
+</html>

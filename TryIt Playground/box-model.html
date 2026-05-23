@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Box Model Playground | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+      
+      /* Box Model Visualization Colors */
+      --margin-color: #f9cb9c;
+      --border-color: #ffe599;
+      --padding-color: #b6d7a8;
+      --content-color: #9fc5e8;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .pane-header {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    /* Slider Styles */
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #000814;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 5px solid var(--ln-color, var(--border));
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* Live Sandbox Workspace */
+    .sandbox {
+      background: #000814;
+      border: 2px dashed var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 250px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Outer Boundary Indicator to show Margin pushing away */
+    .outer-boundary {
+      border: 1px dashed #555;
+      padding: 0;
+      display: inline-block;
+      transition: all 0.1s ease;
+    }
+
+    /* The core custom box modified by sliders */
+    #target-box {
+      background-color: var(--content-color);
+      color: #000;
+      font-weight: bold;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: content-box; /* Crucial to show pure box model calculations */
+      transition: all 0.1s ease;
+      font-size: 14px;
+      min-width: 80px;
+      min-height: 40px;
+    }
+
+    /* Live CSS Code Display Box */
+    .code-display {
+      background: #000814;
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--success);
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Visual Explanation Legend Label Tags */
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #000;
+    }
+    .legend-item {
+      padding: 6px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt Box Sandbox</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    
+    <div class="pane">
+      <div class="pane-header">Adjust the Box Layers</div>
+      
+      <div class="slider-group" style="--ln-color: var(--padding-color);">
+        <div class="slider-label">
+          <span>🟢 Padding (Inside Space)</span>
+          <span id="padding-val">20px</span>
+        </div>
+        <input type="range" id="input-padding" min="0" max="60" value="20" oninput="updateBox()">
+      </div>
+
+      <div class="slider-group" style="--ln-color: var(--border-color);">
+        <div class="slider-label">
+          <span>🟡 Border (The Frame Outline)</span>
+          <span id="border-val">5px</span>
+        </div>
+        <input type="range" id="input-border" min="0" max="25" value="5" oninput="updateBox()">
+      </div>
+
+      <div class="slider-group" style="--ln-color: var(--margin-color);">
+        <div class="slider-label">
+          <span>🟠 Margin (Outside Pushing Space)</span>
+          <span id="margin-val">15px</span>
+        </div>
+        <input type="range" id="input-margin" min="0" max="60" value="15" oninput="updateBox()">
+      </div>
+
+      <div class="legend">
+        <div class="legend-item" style="background: var(--content-color);">Blue = Your Text Content</div>
+        <div class="legend-item" style="background: var(--padding-color);">Green = Padding Layer</div>
+        <div class="legend-item" style="background: var(--border-color);">Yellow = Border Outline</div>
+        <div class="legend-item" style="background: var(--margin-color);">Orange = Margin Push</div>
+      </div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">Visual Screen Render & Ready CSS</div>
+      
+      <div class="sandbox">
+        <div id="margin-visual-box" style="background-color: var(--margin-color); display: inline-block; transition: all 0.1s;">
+          <div id="border-visual-box" style="background-color: var(--border-color); display: inline-block; transition: all 0.1s;">
+            <div id="padding-visual-box" style="background-color: var(--padding-color); display: inline-block; transition: all 0.1s;">
+              <div id="target-box">
+                My ElementBox
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <label style="font-weight: 600; font-size: 14px;">Your Real CSS Styles Generated Automatically:</label>
+      <div id="css-code" class="code-display">.my-element {\n  padding: 20px;\n  border: 5px solid #ffe599;\n  margin: 15px;\n}</div>
+    </div>
+
+  </div>
+
+  <script>
+    function updateBox() {
+      // Fetch slider numeric counts
+      const padding = document.getElementById('input-padding').value;
+      const border = document.getElementById('input-border').value;
+      const margin = document.getElementById('input-margin').value;
+
+      // Update value counters on top of input fields
+      document.getElementById('padding-val').innerText = padding + "px";
+      document.getElementById('border-val').innerText = border + "px";
+      document.getElementById('margin-val').innerText = margin + "px";
+
+      // Dynamically morph the visualization box container blocks
+      document.getElementById('padding-visual-box').style.padding = padding + "px";
+      
+      // We simulate the border via padding on a background layer so colors are clearly separate for beginners
+      document.getElementById('border-visual-box').style.padding = border + "px";
+      document.getElementById('margin-visual-box').style.padding = margin + "px";
+
+      // Render updated text directly inside your ready-to-copy stylesheet box
+      const codeOutput = document.getElementById('css-code');
+      codeOutput.innerText = `.my-element {
+  background-color: #9fc5e8;
+  padding: ${padding}px;
+  border: ${border}px solid #ffe599;
+  margin: ${margin}px;
+}`;
+    }
+
+    // Fire default updates on boot routine
+    updateBox();
+  </script>
+</body>
+</html>

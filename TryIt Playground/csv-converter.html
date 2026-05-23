@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV to JSON Converter | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 30px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .workspace-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .btn {
+      background: var(--success);
+      color: var(--bg);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-back { background: var(--border); color: white; text-decoration: none; padding: 8px 15px;}
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt CSV Data Converter</a>
+    <a href="index.html" class="btn-back">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    <div class="workspace-box">
+      <label style="font-weight: bold; color: var(--accent);">Raw Spreadsheet CSV Input Row Stream</label>
+      <textarea id="csv-input">id,name,role\n1,Alex,Admin\n2,Jordan,Editor</textarea>
+      <button class="btn" onclick="convertCSV()">🔄 Map Rows into JSON Array</button>
+    </div>
+
+    <div class="workspace-box">
+      <label style="font-weight: bold; color: var(--success);">Processed JSON Structural Object Array Block</label>
+      <textarea id="json-output" style="height: 160px; color: var(--success);" readonly placeholder="Result array prints over here..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    function convertCSV() {
+      const csv = document.getElementById('csv-input').value.trim();
+      const lines = csv.split('\n');
+      if (lines.length < 2) {
+        alert("Please enter a valid structure with header variables and minimum 1 row data element.");
+        return;
+      }
+
+      const headers = lines[0].split(',');
+      const result = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const currentLine = lines[i].split(',');
+        const obj = {};
+        
+        headers.forEach((header, index) => {
+          obj[header.trim()] = currentLine[index] ? currentLine[index].trim() : "";
+        });
+        result.push(obj);
+      }
+
+      document.getElementById('json-output').value = JSON.stringify(result, null, 2);
+    }
+    convertCSV();
+  </script>
+</body>
+</html>

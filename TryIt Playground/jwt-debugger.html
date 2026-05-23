@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT Debugger | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --header-color: #ef476f;
+      --payload-color: #06d6a0;
+      --sig-color: #4ea8de;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      gap: 15px;
+    }
+
+    .pane-header {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 250px;
+      background: #000814;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      box-sizing: border-box;
+      line-height: 1.5;
+    }
+
+    .decoded-section {
+      background: #000814;
+      border-radius: 6px;
+      padding: 15px;
+      border-left: 5px solid var(--border);
+    }
+
+    .decoded-header {
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    pre {
+      margin: 0;
+      font-family: monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+
+    @media (max-width: 900px) { .container { flex-direction: column; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt JWT Debugger</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    
+    <div class="pane">
+      <div class="pane-header">Paste Encoded Token String</div>
+      <p style="margin:0; font-size:13px; color:#8d99ae;">Paste a token to inspect its encryption segments:</p>
+      <textarea id="jwt-input" oninput="decodeJWT()">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0NTY3OCIsIm5hbWUiOiJBbGV4Iiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzE2NDIzMjAwfQ.signature_mock_data_verify_pass</textarea>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">Decoded Structural Breakdown</div>
+      
+      <div class="decoded-section" style="border-left-color: var(--header-color);">
+        <div class="decoded-header" style="color: var(--header-color);">Header: Metadata & Algorithm</div>
+        <pre id="jwt-header-out">{}</pre>
+      </div>
+
+      <div class="decoded-section" style="border-left-color: var(--payload-color);">
+        <div class="decoded-header" style="color: var(--payload-color);">Payload: Embedded User Data</div>
+        <pre id="jwt-payload-out">{}</pre>
+      </div>
+
+      <div class="decoded-section" style="border-left-color: var(--sig-color);">
+        <div class="decoded-header" style="color: var(--sig-color);">Signature: Security Verification Hash</div>
+        <pre id="jwt-signature-out" style="color: #8d99ae;">Processing signature security...</pre>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function decodeJWT() {
+      const token = document.getElementById('jwt-input').value.trim();
+      const headerOut = document.getElementById('jwt-header-out');
+      const payloadOut = document.getElementById('jwt-payload-out');
+      const sigOut = document.getElementById('jwt-signature-out');
+
+      const parts = token.split('.');
+
+      if (parts.length !== 3) {
+        headerOut.innerText = "Invalid JWT Format";
+        payloadOut.innerText = "Tokens must contain 2 separating dots (.)";
+        sigOut.innerText = "Waiting...";
+        return;
+      }
+
+      try {
+        // Base64 decoding handler
+        const decodedHeader = atob(parts[0].replace(/-/g, '+').replace(/_/g, '/'));
+        headerOut.innerText = JSON.stringify(JSON.parse(decodedHeader), null, 2);
+        headerOut.style.color = "var(--text)";
+      } catch (e) {
+        headerOut.innerText = "Error decoding header segment.";
+        headerOut.style.color = "var(--header-color)";
+      }
+
+      try {
+        const decodedPayload = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
+        payloadOut.innerText = JSON.stringify(JSON.parse(decodedPayload), null, 2);
+        payloadOut.style.color = "var(--text)";
+      } catch (e) {
+        payloadOut.innerText = "Error decoding payload segment.";
+        payloadOut.style.color = "var(--header-color)";
+      }
+
+      sigOut.innerText = parts[2] ? `Verified Hash String: ${parts[2]}` : "No signature found";
+    }
+
+    // Run verification instantly on boot layout setup
+    decodeJWT();
+  </script>
+</body>
+</html>

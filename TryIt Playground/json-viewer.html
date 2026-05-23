@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Validator & Tree Viewer | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+      --success: #06d6a0;
+      --error: #ef476f;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      gap: 15px;
+    }
+
+    .pane-header {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    textarea {
+      flex: 1;
+      background: #000814;
+      color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+    }
+
+    .status-banner {
+      padding: 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 14px;
+      text-align: center;
+    }
+    .status-neutral { background: var(--border); color: var(--text); }
+    .status-pass { background: rgba(6, 214, 160, 0.2); color: var(--success); border: 1px solid var(--success); }
+    .status-fail { background: rgba(239, 71, 111, 0.2); color: var(--error); border: 1px solid var(--error); }
+
+    .viewer-box {
+      flex: 1;
+      background: #000814;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 15px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+
+    @media (max-width: 768px) { .container { flex-direction: column; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt JSON Framework</a>
+    <a href="index.html" class="btn">&larr; Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+    
+    <div class="pane">
+      <div class="pane-header">Paste Raw JSON Text</div>
+      <textarea id="json-input" placeholder='Paste code here... Example:\n{\n  "project": "TryIt Studio",\n  "version": 2\n}'>{"user": "Alex", "skills": ["HTML", "CSS"], "isActive": true}</textarea>
+      <button class="btn" onclick="parseJSON()">🔍 Validate & Process Tree</button>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">Visual Tree Breakdown Map</div>
+      <div id="status" class="status-banner status-neutral">Status: Waiting for input strings...</div>
+      <div id="tree-viewer" class="viewer-box">Your cleaned-up visual data branches will look like a beautiful nested folder here...</div>
+    </div>
+
+  </div>
+
+  <script>
+    function parseJSON() {
+      const input = document.getElementById('json-input').value.trim();
+      const status = document.getElementById('status');
+      const viewer = document.getElementById('tree-viewer');
+
+      if(!input) return;
+
+      try {
+        const parsedObject = JSON.parse(input);
+        
+        status.innerText = "✅ VALID JSON (Perfect formatting structure)";
+        status.className = "status-banner status-pass";
+
+        // Clean out raw arrays and build a pretty color-coded HTML output
+        viewer.innerHTML = formatObjectToTree(parsedObject, 0);
+
+      } catch (err) {
+        status.innerText = "❌ INVALID CONFIGURATION (Fix typos or missing commas)";
+        status.className = "status-banner status-fail";
+        viewer.innerHTML = `<span style="color:var(--error); font-weight:bold;">${err.message}</span>`;
+      }
+    }
+
+    // Direct translation function to print data blocks into clear indent visual maps
+    function formatObjectToTree(obj, indentLevel) {
+      let html = "";
+      const spacing = "&nbsp;".repeat(indentLevel * 4);
+
+      if (typeof obj === 'object' && obj !== null) {
+        const isArray = Array.isArray(obj);
+        html += isArray ? "<span style='color:#aaa;'>[ Array Box ]</span><br>" : "<span style='color:#aaa;'>{ Object Container }</span><br>";
+        
+        for (let key in obj) {
+          const val = obj[key];
+          html += `${spacing}├── <span style="color:var(--accent); font-weight:bold;">"${key}"</span>: `;
+          if (typeof val === 'object' && val !== null) {
+            html += formatObjectToTree(val, indentLevel + 1);
+          } else {
+            let valColor = "var(--success)";
+            if (typeof val === 'number') valColor = "#f9cb9c";
+            if (typeof val === 'boolean') valColor = "#ef476f";
+            html += `<span style="color:${valColor};">${JSON.stringify(val)}</span><br>`;
+          }
+        }
+      } else {
+        html += `<span style="color:var(--success);">${JSON.stringify(obj)}</span><br>`;
+      }
+      return html;
+    }
+
+    // Run first generation pass instantly
+    parseJSON();
+  </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Language Minifier & Obfuscator | TryIt Tools</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --border: #3a506b;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      box-sizing: border-box;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 15px;
+    }
+
+    .pane-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    textarea {
+      flex: 1;
+      background: #000814;
+      color: #06d6a0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .stats {
+      font-size: 12px;
+      color: #8d99ae;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">⚡ TryIt Multi-Tool</a>
+    <a href="index.html" class="btn">&larr; Back to Editor</a>
+  </header>
+
+  <div class="container">
+    <div class="pane">
+      <div class="pane-header">
+        <span>Source Code</span>
+        <select id="language-select">
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+          <option value="js">JavaScript</option>
+        </select>
+      </div>
+      <textarea id="input-code" placeholder="Paste your HTML, CSS, or JavaScript code here..."></textarea>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="process('minify')">Minify</button>
+        <button class="btn btn-primary" onclick="process('obfuscate')">Obfuscate</button>
+        <button class="btn" onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-header">
+        <span>Result Code</span>
+        <span class="stats" id="output-stats">Size Saved: 0%</span>
+      </div>
+      <textarea id="output-code" readonly placeholder="Your processed layout output will appear here..."></textarea>
+      <div class="actions">
+        <button class="btn" onclick="copyResult()">Copy to Clipboard</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toBase64(str) {
+      const utf8Bytes = new TextEncoder().encode(str);
+      let binary = '';
+      const chunkSize = 8192;
+      for (let i = 0; i < utf8Bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(...utf8Bytes.subarray(i, i + chunkSize));
+      }
+      return btoa(binary);
+    }
+
+    function process(mode) {
+      const input = document.getElementById('input-code').value;
+      const lang = document.getElementById('language-select').value;
+      const outputArea = document.getElementById('output-code');
+      
+      if (!input.trim()) {
+        alert("Please enter some code first!");
+        return;
+      }
+
+      let result = "";
+
+      if (mode === 'minify') {
+        if (lang === 'html') {
+          result = input
+            .replace(/<!--[\s\S]*?-->/g, '')
+            .replace(/\s+/g, ' ')
+            .replace(/>\s+</g, '><')
+            .trim();
+        } 
+        else if (lang === 'css') {
+          result = input
+            .replace(/\/\*[\s\S]*?\*\//g, '')
+            .replace(/\s+/g, ' ')
+            .replace(/ ?\{ ?/g, '{')
+            .replace(/ ?\} ?/g, '}')
+            .replace(/ ?; ?/g, ';')
+            .replace(/ ?, ?/g, ',')
+            .replace(/ ?: ?/g, ':')
+            .trim();
+        } 
+        else if (lang === 'js') {
+          // Protect string literals first so comments/whitespace inside strings are not touched
+          const placeholders = [];
+          let safe = input.replace(/(`(?:[^`\\]|\\.)*`|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g, (m) => {
+            placeholders.push(m);
+            return '\x00S' + (placeholders.length - 1) + '\x00';
+          });
+          safe = safe
+            .replace(/\/\*[\s\S]*?\*\//g, '')
+            .replace(/(^|[^\\:])\/\/.*$/gm, '$1')
+            .replace(/\s+/g, ' ')
+            .replace(/\{ /g, '{').replace(/ \}/g, '}')
+            .replace(/; /g, ';').replace(/, /g, ',')
+            .trim();
+          result = safe.replace(/\x00S(\d+)\x00/g, (_, i) => placeholders[i]);
+        }
+      } 
+      else if (mode === 'obfuscate') {
+        if (lang === 'js') {
+          const base64Data = toBase64(input);
+          result = `/* 🔐 Obfuscated JS */\n(()=> {const d="${base64Data}";new Function(new TextDecoder().decode(Uint8Array.from(atob(d),c=>c.charCodeAt(0))))();})();`;
+        } 
+        else if (lang === 'html') {
+          const base64Data = toBase64(input);
+          const startScript = String.fromCharCode(60, 115, 99, 114, 105, 112, 116, 62);
+          const endScript = String.fromCharCode(60, 47, 115, 99, 114, 105, 112, 116, 62);
+          result = startScript + `document.write(new TextDecoder().decode(Uint8Array.from(atob("${base64Data}"),c=>c.charCodeAt(0))));` + endScript;
+        } 
+        else if (lang === 'css') {
+          const base64Data = toBase64(input);
+          result = `/* 🔐 Obfuscated CSS Dynamic Injector */\n(()=> {const s=document.createElement('style');s.textContent=new TextDecoder().decode(Uint8Array.from(atob("${base64Data}"),c=>c.charCodeAt(0)));document.head.appendChild(s);})();`;
+        }
+      }
+
+      outputArea.value = result;
+
+      const originalLen = input.length;
+      const finalLen = result.length;
+      if (mode === 'minify' && originalLen > 0) {
+        const saved = Math.round(((originalLen - finalLen) / originalLen) * 100);
+        document.getElementById('output-stats').innerText = `Size Saved: ${saved > 0 ? saved : 0}%`;
+      } else {
+        document.getElementById('output-stats').innerText = `Output Chars: ${finalLen}`;
+      }
+    }
+
+    function copyResult() {
+      const output = document.getElementById('output-code');
+      if (!output.value) return;
+      navigator.clipboard.writeText(output.value)
+        .then(() => alert("Copied successfully! 📋"))
+        .catch(() => alert("Copy failed. Please select the text manually and press Ctrl+C / Cmd+C."));
+    }
+
+    function clearAll() {
+      document.getElementById('input-code').value = "";
+      document.getElementById('output-code').value = "";
+      document.getElementById('output-stats').innerText = "Size Saved: 0%";
+    }
+  </script>
+</body>
+</html>
