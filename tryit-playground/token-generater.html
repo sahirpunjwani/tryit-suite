@@ -6,6 +6,114 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JWT Token Generator | TryIt Tools</title>
   <style>
+    /* --- UNIVERSAL SIDEBAR MASTER STYLES --- */
+:root {
+  --sidebar-w: 260px;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Box Container */
+.sidebar {
+  width: var(--sidebar-w);
+  background: #1c2541;
+  border-right: 1px solid #3a506b;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  z-index: 999;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+  padding: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid #3a506b;
+}
+.sidebar-header a { color: #f8f9fa; text-decoration: none; }
+.sidebar-header span { color: #4ea8de; }
+
+.sidebar-menu { padding: 15px 0; display: flex; flex-direction: column; }
+
+.menu-category {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #4ea8de;
+  padding: 10px 20px 5px 20px;
+  margin-top: 10px;
+}
+
+.sidebar-link {
+  padding: 10px 20px;
+  color: #8d99ae;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+.sidebar-link:hover {
+  background: rgba(78, 168, 222, 0.1);
+  color: #f8f9fa;
+}
+.sidebar-link.active {
+  background: #4ea8de;
+  color: #0b132b;
+  font-weight: bold;
+}
+
+/* Floating Toggle Button */
+.sidebar-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #4ea8de;
+  color: #0b132b;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  z-index: 1000;
+  display: none; /* Only reveals on mobile screens */
+}
+
+/* Adjusted Workspace Canvas */
+.main-content {
+  margin-left: var(--sidebar-w);
+  flex-grow: 1;
+  width: calc(100% - var(--sidebar-w));
+  box-sizing: border-box;
+}
+
+/* Responsive Breakpoints for Tablet & Mobile Layouts */
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%); /* Hides sidebar off-screen initially */
+  }
+  .sidebar.open {
+    transform: translateX(0); /* Slides open smoothly */
+  }
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  .sidebar-toggle {
+    display: block; /* Reveals toggle button on smaller viewports */
+  }
+}
     :root {
       --bg: #0b132b;
       --panel: #1c2541;
