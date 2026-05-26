@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TryIt Suite | Developer Hub</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    :root {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #4ea8de;
+      --text: #f8f9fa;
+      --text-muted: #8d99ae;
+      --border: #3a506b;
+      --search-bg: #000814;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 50px;
+    }
+    header {
+      background: var(--panel);
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { margin: 0; color: var(--text); font-size: 32px; }
+    header h1 span { color: var(--accent); }
+    header p { margin: 10px 0 0 0; color: var(--text-muted); font-size: 16px; }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    
+    /* Search Bar Design */
+    .search-wrapper { max-width: 600px; margin: 0 auto 40px auto; position: relative; }
+    .search-bar { width: 100%; padding: 15px 20px; background: var(--search-bg); border: 2px solid var(--border); border-radius: 30px; color: var(--text); font-size: 16px; outline: none; box-sizing: border-box; transition: 0.3s; }
+    .search-bar:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(78, 168, 222, 0.3); }
+    
+    /* Category Layouts */
+    .category-title { color: var(--accent); font-size: 20px; text-transform: uppercase; letter-spacing: 1px; margin: 30px 0 15px 0; }
+    hr { border: 0; height: 1px; background: var(--border); margin: 40px 0; }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    
+    /* Interactive Card Specs */
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-decoration: none; color: var(--text); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s; box-sizing: border-box; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); border-color: var(--accent); }
+    .card-icon { font-size: 30px; margin-bottom: 10px; }
+    .card-title { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
+    .card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.4; margin-bottom: 15px; flex-grow: 1; }
+    .card-action { font-size: 13px; color: var(--accent); font-weight: bold; text-transform: uppercase; }
+    
+    .no-results { text-align: center; color: var(--text-muted); font-size: 18px; display: none; margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚡ TryIt <span>Suite</span></h1>
+    <p>Your local client-side developer runtime dashboard</p>
+  </header>
+
+  <div class="container">
+    
+    <div class="search-wrapper">
+      <input type="text" id="search-input" class="search-bar" placeholder="Search across tools (e.g., compiler, regex, sandbox)..." oninput="filterTools()">
+    </div>
+
+    <div class="tool-section">
+      <div class="category-title">Compilers & Code Playgrounds</div>
+      <div class="grid">
+        <a href="tryit-playground/html-compiler.html" class="card">
+          <div><div class="card-icon">🌐</div><div class="card-title">HTML Compiler</div><div class="card-desc">Real-time rendered live HTML/CSS preview editor canvas.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/js-compiler.html" class="card">
+          <div><div class="card-icon">🟨</div><div class="card-title">JavaScript Compiler</div><div class="card-desc">Client-side execution terminal for testing vanilla script loops.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/python-compiler.html" class="card">
+          <div><div class="card-icon">🐍</div><div class="card-title">Python Workspace</div><div class="card-desc">Simulate backend python logic and output streams inside the browser.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/markdown-compiler.html" class="card">
+          <div><div class="card-icon">📝</div><div class="card-title">Markdown Compiler</div><div class="card-desc">Live converter turning raw documentation markdown directly into clean elements.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/c-compiler.html" class="card">
+          <div><div class="card-icon">🎛️</div><div class="card-title">C Compiler Studio</div><div class="card-desc">Write and test architecture code structures targeting compilation binaries.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/cpp-compiler.html" class="card">
+          <div><div class="card-icon">💎</div><div class="card-title">C++ Compiler Engine</div><div class="card-desc">Execute high-fidelity object programming loops inside code buffers.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/java-compiler.html" class="card">
+          <div><div class="card-icon">☕</div><div class="card-title">Java JVM Studio</div><div class="card-desc">Test Java configurations targeting standard virtual environment streams.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="tool-section">
+      <div class="category-title">Data Engineering & Authentication Security</div>
+      <div class="grid">
+        <a href="tryit-playground/sql-sandbox.html" class="card">
+          <div><div class="card-icon">🗄️</div><div class="card-title">SQL Query Sandbox</div><div class="card-desc">Run operational query transactions and pull relational database tables.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/csv-converter.html" class="card">
+          <div><div class="card-icon">📊</div><div class="card-title">CSV Converter</div><div class="card-desc">Map array cell layouts directly into valid JSON database objects.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/json-viewer.html" class="card">
+          <div><div class="card-icon">🔍</div><div class="card-title">JSON Viewer</div><div class="card-desc">Parse, isolate, and print nested JSON object structures cleanly.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/jwt-debugger.html" class="card">
+          <div><div class="card-icon">🔑</div><div class="card-title">JWT Debugger</div><div class="card-desc">Deconstruct security tokens to analyze header payload algorithms.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/token-generater.html" class="card">
+          <div><div class="card-icon">🎲</div><div class="card-title">Token Generator</div><div class="card-desc">Generate safe cryptographic signature strings and hash keys.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/url-handler.html" class="card">
+          <div><div class="card-icon">🔗</div><div class="card-title">URL Handler</div><div class="card-desc">Encode, decode, and split parameterized route target strings.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="tool-section">
+      <div class="category-title">Design, Layout, & Text Testing</div>
+      <div class="grid">
+        <a href="tryit-playground/animation-studio.html" class="card">
+          <div><div class="card-icon">🎬</div><div class="card-title">Animation Studio</div><div class="card-desc">Build timeline components and visualize variable UI frames.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/box-model.html" class="card">
+          <div><div class="card-icon">📦</div><div class="card-title">Box Model Inspector</div><div class="card-desc">Fine-tune component padding layouts and border bounding boxes.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/color-sandbox.html" class="card">
+          <div><div class="card-icon">🎨</div><div class="card-title">Color Sandbox</div><div class="card-desc">Select palette color schemes and map Hex/RGB variables.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/diff-checker.html" class="card">
+          <div><div class="card-icon">⚖️</div><div class="card-title">Diff Checker</div><div class="card-desc">Isolate individual file line variances across text buffers.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/regex-tester.html" class="card">
+          <div><div class="card-icon">⚙️</div><div class="card-title">RegEx Tester</div><div class="card-desc">Test matches against string characters with live highlighters.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+        <a href="tryit-playground/tool.html" class="card">
+          <div><div class="card-icon">🛠️</div><div class="card-title">Core Blueprint Blueprint</div><div class="card-desc">Clean design code template framework for developing future hub elements.</div></div>
+          <div class="card-action">Launch Module &rarr;</div>
+        </a>
+      </div>
+    </div>
+
+    <div id="no-results" class="no-results">No developer utilities matched your query.</div>
+
+  </div>
+
+  <script>
+    // Filtering script matching individual string inputs to card parameters
+    function filterTools() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.card');
+      const sections = document.querySelectorAll('.tool-section');
+      const hrs = document.querySelectorAll('hr');
+      let totalMatches = 0;
+
+      // Filter individual utility elements
+      cards.forEach(card => {
+        const title = card.querySelector('.card-title').innerText.toLowerCase();
+        const desc = card.querySelector('.card-desc').innerText.toLowerCase();
+        
+        if (title.includes(query) || desc.includes(query)) {
+          card.style.display = "flex";
+          totalMatches++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      // Handle category section visibility and dividers
+      sections.forEach((section, index) => {
+        const visibleCardsInSection = section.querySelectorAll('.card[style="display: flex;"]');
+        
+        if (visibleCardsInSection.length === 0 && query !== "") {
+          section.style.display = "none";
+          if (hrs[index]) hrs[index].style.display = "none";
+          if (index > 0 && hrs[index - 1]) hrs[index - 1].style.display = "none";
+        } else {
+          section.style.display = "block";
+          if (hrs[index]) hrs[index].style.display = "block";
+        }
+      });
+
+      // Render placeholder when matching queries fail
+      document.getElementById('no-results').style.display = (totalMatches === 0) ? "block" : "none";
+    }
+  </script>
+</body>
+</html>
