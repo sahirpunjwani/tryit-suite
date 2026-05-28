@@ -96,6 +96,146 @@
     .btn-get-started:active {
       transform: translateY(1px);
     }
+
+    /* HOOK SECTIONS */
+    .hook-section {
+      background: #0b132b;
+      padding: 80px 20px;
+      text-align: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #f8f9fa;
+    }
+
+    .hook-section.alt {
+      background: #0d1a35;
+    }
+
+    .hook-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: #4ea8de;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .hook-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      margin: 0 0 16px 0;
+      line-height: 1.2;
+    }
+
+    .hook-title span { color: #4ea8de; }
+
+    .hook-body {
+      font-size: 1.05rem;
+      color: #8d99ae;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .hook-body strong { color: #f8f9fa; font-weight: 600; }
+
+    /* STATS BAR */
+    .stats-bar {
+      background: #111d3a;
+      border-top: 1px solid rgba(78,168,222,0.15);
+      border-bottom: 1px solid rgba(78,168,222,0.15);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .stat-item {
+      padding: 28px 40px;
+      text-align: center;
+      border-right: 1px solid rgba(78,168,222,0.1);
+      flex: 1;
+      min-width: 130px;
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      display: block;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #4ea8de;
+    }
+
+    .stat-lbl {
+      display: block;
+      font-size: 0.8rem;
+      color: #8d99ae;
+      margin-top: 4px;
+    }
+
+    /* TOOLS GRID */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: rgba(78,168,222,0.08);
+      border: 1px solid rgba(78,168,222,0.12);
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .tool-card {
+      background: #0b132b;
+      padding: 1.5rem;
+      text-decoration: none;
+      display: block;
+      transition: background 0.2s;
+    }
+
+    .tool-card:hover { background: #0d1a35; }
+
+    .tool-icon { font-size: 1.4rem; display: block; margin-bottom: 8px; }
+
+    .tool-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #f8f9fa;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .tool-desc {
+      font-size: 0.78rem;
+      color: #8d99ae;
+      line-height: 1.5;
+    }
+
+    .tool-tag {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .tag-native  { background: rgba(77,255,195,0.08); color: #4dffc3; }
+    .tag-ext     { background: rgba(78,168,222,0.1);  color: #4ea8de; }
+
+    /* FINAL CTA */
+    .final-cta {
+      background: linear-gradient(135deg, #0b132b 0%, #111d3a 100%);
+      border-top: 1px solid rgba(78,168,222,0.15);
+      padding: 80px 20px;
+      text-align: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    @media (max-width: 600px) {
+      .stat-item { border-right: none; border-bottom: 1px solid rgba(78,168,222,0.1); }
+      .stat-item:last-child { border-bottom: none; }
+    }
   </style>
 </head>
 <body>
@@ -114,6 +254,89 @@
       <a href="dashboard.html" class="btn-get-started"; return false;">Get Started →</a>
 
     </section>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item"><span class="stat-num">20+</span><span class="stat-lbl">Dev Tools</span></div>
+    <div class="stat-item"><span class="stat-num">0</span><span class="stat-lbl">Install Required</span></div>
+    <div class="stat-item"><span class="stat-num">100%</span><span class="stat-lbl">Free Forever</span></div>
+    <div class="stat-item"><span class="stat-num">7</span><span class="stat-lbl">Languages</span></div>
+  </div>
+
+  <!-- HOOK SECTION 1 -->
+  <div class="hook-section">
+    <span class="hook-label">// why tryit suite</span>
+    <h2 class="hook-title">Your browser is already<br><span>an IDE.</span></h2>
+    <p class="hook-body">
+      Stop switching tabs. Stop installing extensions. TryIt Suite puts <strong>compilers, security tools, data handlers, and design utilities</strong> in one place — entirely in your browser, entirely free.
+    </p>
+    <a href="dashboard.html" class="btn-get-started">Open Dashboard →</a>
+  </div>
+
+  <!-- TOOLS PREVIEW -->
+  <div class="hook-section alt">
+    <span class="hook-label">// what's inside</span>
+    <h2 class="hook-title">Everything you need.<br><span>Nothing you don't.</span></h2>
+    <p class="hook-body">From live HTML previews to JWT debugging — every tool you reach for in a dev session, right here.</p>
+
+    <div class="tools-grid">
+      <a class="tool-card" href="tryit-playground/html-compiler.html">
+        <span class="tool-icon">🌐</span>
+        <span class="tool-name">HTML Compiler</span>
+        <span class="tool-desc">Live rendered HTML/CSS preview with real-time output.</span>
+        <span class="tool-tag tag-native">built-in</span>
+      </a>
+      <a class="tool-card" href="tryit-playground/js-compiler.html">
+        <span class="tool-icon">🟨</span>
+        <span class="tool-name">JavaScript Engine</span>
+        <span class="tool-desc">Client-side JS execution with console output.</span>
+        <span class="tool-tag tag-native">built-in</span>
+      </a>
+      <a class="tool-card" href="tryit-playground/python-compiler.html">
+        <span class="tool-icon">🐍</span>
+        <span class="tool-name">Python Workspace</span>
+        <span class="tool-desc">Run Python scripts directly in the browser.</span>
+        <span class="tool-tag tag-native">built-in</span>
+      </a>
+      <a class="tool-card" href="tryit-playground/c-compiler.html">
+        <span class="tool-icon">🎛️</span>
+        <span class="tool-name">C Compiler</span>
+        <span class="tool-desc">Write and compile C code with output logs.</span>
+        <span class="tool-tag tag-ext">powered by OnlineGDB</span>
+      </a>
+      <a class="tool-card" href="tryit-playground/java-compiler.html">
+        <span class="tool-icon">☕</span>
+        <span class="tool-name">Java Studio</span>
+        <span class="tool-desc">Test Java classes and standard output streams.</span>
+        <span class="tool-tag tag-ext">powered by JDoodle</span>
+      </a>
+      <a class="tool-card" href="tryit-playground/jwt-debugger.html">
+        <span class="tool-icon">🔑</span>
+        <span class="tool-name">JWT Debugger</span>
+        <span class="tool-desc">Decode and inspect JWT header and payload.</span>
+        <span class="tool-tag tag-native">built-in</span>
+      </a>
+      <a class="tool-card" href="tryit-playground/regex-tester.html">
+        <span class="tool-icon">⚙️</span>
+        <span class="tool-name">RegEx Tester</span>
+        <span class="tool-desc">Live pattern matching with match highlights.</span>
+        <span class="tool-tag tag-native">built-in</span>
+      </a>
+      <a class="tool-card" href="dashboard.html">
+        <span class="tool-icon">＋</span>
+        <span class="tool-name">And 13 more...</span>
+        <span class="tool-desc">Diff checker, CSV converter, color sandbox, animations & more.</span>
+        <span class="tool-tag tag-native">view all</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="final-cta">
+    <h2 class="hook-title" style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; color:#f8f9fa;">Ready to build?</h2>
+    <p class="hook-body">Jump straight into the dashboard and start coding — no account, no setup, no limits.</p>
+    <a href="dashboard.html" class="btn-get-started">Get Started for Free →</a>
   </div>
 
   <script>
