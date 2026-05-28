@@ -55,6 +55,33 @@
     .card-action { font-size: 13px; color: var(--accent); font-weight: bold; text-transform: uppercase; }
     
     .no-results { text-align: center; color: var(--text-muted); font-size: 18px; display: none; margin-top: 40px; }
+
+    /* External link badge */
+    .card-badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-bottom: 8px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-external {
+      background: rgba(78,168,222,0.12);
+      color: #4ea8de;
+      border: 1px solid rgba(78,168,222,0.25);
+    }
+    .badge-builtin {
+      background: rgba(77,255,150,0.08);
+      color: #4dffa0;
+      border: 1px solid rgba(77,255,150,0.2);
+    }
+    .card-credit {
+      font-size: 11px;
+      color: #4ea8de;
+      margin-top: 6px;
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -81,24 +108,24 @@
           <div class="card-action">Launch Module &rarr;</div>
         </a>
         <a href="tryit-playground/python-compiler.html" class="card">
-          <div><div class="card-icon">🐍</div><div class="card-title">Python Workspace</div><div class="card-desc">Simulate backend python logic and output streams inside the browser.</div></div>
+          <div><span class="card-badge badge-builtin">✦ Built-in</span><div class="card-icon">🐍</div><div class="card-title">Python Workspace</div><div class="card-desc">Run Python scripts directly in the browser — no install needed.</div></div>
           <div class="card-action">Launch Module &rarr;</div>
         </a>
         <a href="tryit-playground/markdown-compiler.html" class="card">
           <div><div class="card-icon">📝</div><div class="card-title">Markdown Compiler</div><div class="card-desc">Live converter turning raw documentation markdown directly into clean elements.</div></div>
           <div class="card-action">Launch Module &rarr;</div>
         </a>
-        <a href="tryit-playground/c-compiler.html" class="card">
-          <div><div class="card-icon">🎛️</div><div class="card-title">C Compiler Studio</div><div class="card-desc">Write and test architecture code structures targeting compilation binaries.</div></div>
-          <div class="card-action">Launch Module &rarr;</div>
+        <a href="https://onecompiler.com/c" target="_blank" rel="noopener" class="card">
+          <div><span class="card-badge badge-external">↗ External · No Signup</span><div class="card-icon">🎛️</div><div class="card-title">C Compiler Studio</div><div class="card-desc">Write, compile, and run C code instantly with full GCC support.</div><div class="card-credit">Powered by OneCompiler</div></div>
+          <div class="card-action">Open Tool &rarr;</div>
         </a>
-        <a href="tryit-playground/cpp-compiler.html" class="card">
-          <div><div class="card-icon">💎</div><div class="card-title">C++ Compiler Engine</div><div class="card-desc">Execute high-fidelity object programming loops inside code buffers.</div></div>
-          <div class="card-action">Launch Module &rarr;</div>
+        <a href="https://onecompiler.com/cpp" target="_blank" rel="noopener" class="card">
+          <div><span class="card-badge badge-external">↗ External · No Signup</span><div class="card-icon">💎</div><div class="card-title">C++ Compiler Engine</div><div class="card-desc">Full C++ with STL support — compile and run object-oriented code instantly.</div><div class="card-credit">Powered by OneCompiler</div></div>
+          <div class="card-action">Open Tool &rarr;</div>
         </a>
-        <a href="tryit-playground/java-compiler.html" class="card">
-          <div><div class="card-icon">☕</div><div class="card-title">Java JVM Studio</div><div class="card-desc">Test Java configurations targeting standard virtual environment streams.</div></div>
-          <div class="card-action">Launch Module &rarr;</div>
+        <a href="https://onecompiler.com/java" target="_blank" rel="noopener" class="card">
+          <div><span class="card-badge badge-external">↗ External · No Signup</span><div class="card-icon">☕</div><div class="card-title">Java JVM Studio</div><div class="card-desc">Write and run Java classes with standard output — no local JDK needed.</div><div class="card-credit">Powered by OneCompiler</div></div>
+          <div class="card-action">Open Tool &rarr;</div>
         </a>
       </div>
     </div>
@@ -124,7 +151,7 @@
           <div><div class="card-icon">🔑</div><div class="card-title">JWT Debugger</div><div class="card-desc">Deconstruct security tokens to analyze header payload algorithms.</div></div>
           <div class="card-action">Launch Module &rarr;</div>
         </a>
-        <a href="tryit-playground/token-generater.html" class="card">
+        <a href="tryit-playground/token-generator.html" class="card">
           <div><div class="card-icon">🎲</div><div class="card-title">Token Generator</div><div class="card-desc">Generate safe cryptographic signature strings and hash keys.</div></div>
           <div class="card-action">Launch Module &rarr;</div>
         </a>
@@ -161,7 +188,7 @@
           <div class="card-action">Launch Module &rarr;</div>
         </a>
         <a href="tryit-playground/tool.html" class="card">
-          <div><div class="card-icon">🛠️</div><div class="card-title">Core Blueprint Blueprint</div><div class="card-desc">Clean design code template framework for developing future hub elements.</div></div>
+          <div><div class="card-icon">🛠️</div><div class="card-title">Core Blueprint</div><div class="card-desc">Clean design code template framework for developing future hub elements.</div></div>
           <div class="card-action">Launch Module &rarr;</div>
         </a>
       </div>
