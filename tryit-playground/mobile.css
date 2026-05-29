@@ -1,0 +1,162 @@
+/* TRYIT SUITE - GLOBAL MOBILE CSS */
+
+@media (max-width: 768px) {
+
+    /* HEADER */
+    header {
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 15px;
+    }
+
+    .btn {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    /* MAIN LAYOUT */
+    .container {
+        flex-direction: column;
+        padding: 12px;
+        gap: 12px;
+    }
+
+    /* PANES */
+    .pane {
+        padding: 14px;
+        gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .pane-header {
+        font-size: 15px;
+    }
+
+    /* EDITORS & TEXTAREAS */
+    textarea,
+    .editor,
+    .code-input,
+    .code-display,
+    .output-box,
+    .output-panel,
+    .result-box,
+    pre {
+        font-size: 12px;
+        min-height: 160px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    /* INPUTS & SELECTS */
+    input[type="text"],
+    input[type="number"],
+    input[type="password"],
+    select {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    /* OPTION ROWS - stack vertically */
+    .option-row,
+    .input-row,
+    .control-row,
+    .toolbar,
+    .controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* BUTTONS */
+    .btn-run,
+    .run-btn,
+    button[onclick] {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 240px;
+        left: -240px;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    /* SPLIT PANELS (diff checker, html compiler etc) */
+    .split,
+    .split-view,
+    .panels,
+    .panel-row,
+    .editor-output {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* STAGE / PREVIEW AREAS */
+    .stage,
+    .preview,
+    .preview-frame,
+    iframe {
+        height: 200px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* TABLES */
+    table {
+        font-size: 12px;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /* GRID CARDS */
+    .grid,
+    .tools-grid,
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* COLOR SANDBOX SPECIFIC */
+    .palette-grid,
+    .swatch-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* TIMELINE BLOCKS */
+    .timeline-block {
+        padding: 10px;
+    }
+
+    /* TOKEN / JWT OUTPUTS */
+    .token-output,
+    .jwt-section,
+    .result-block {
+        word-break: break-all;
+        font-size: 12px;
+        overflow-x: auto;
+    }
+
+    /* HIDE DECORATIVE LABELS ON TINY SCREENS */
+    @media (max-width: 400px) {
+        .pane-header {
+            font-size: 13px;
+        }
+
+        header .btn {
+            display: none;
+        }
+    }
+}
