@@ -304,6 +304,531 @@
   </style>
 </head>
 <body>
+    <!-- Google Fonts (Safe to put in body for drop-in usage) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Scoped styles so it doesn't break your existing site */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0f1a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 99999;
+            cursor: crosshair;
+        }
+
+        .loader-overlay * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        #particleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .loader-container {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+        }
+
+        .logo-title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .logo-image {
+            width: 120px;
+            height: auto;
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.3));
+            animation: logoFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .tagline {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #00d4ff;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .logo {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(180deg, #ffffff 0%, #c8c8c8 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            line-height: 1;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.1));
+            animation: logoGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.1)); }
+            50% { filter: drop-shadow(0 0 50px rgba(0, 212, 255, 0.3)); }
+        }
+
+        .description {
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .loading-wrapper {
+            margin-top: 1rem;
+        }
+
+        .loading-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #00d4ff;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 500px;
+            height: 13px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00e5ff 0%, #00d4ff 50%, #00a8ff 100%);
+            background-size: 200% 100%;
+            border-radius: 8px;
+            transition: width 0.2s ease-out;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.6), 0 0 30px rgba(0, 212, 255, 0.3);
+            animation: shimmer 3s linear infinite;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progressShine 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-percentage {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-top: 1.5rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 6px;
+            margin-left: 8px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: dotPulse 1.4s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+        }
+
+        .dot:nth-child(1) { animation-delay: 0s; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .tips-container {
+            margin-top: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tip-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(0, 212, 255, 0.6);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .tip-box {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .tip-box:hover .tip-content {
+            color: #00d4ff;
+        }
+
+        .tip-content {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: #ffffff;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s ease;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @media (max-width: 768px) {
+            .logo-image { width: 100px; }
+            .logo { font-size: 3.5rem; }
+            .description { font-size: 1rem; }
+            .tagline { font-size: 0.65rem; letter-spacing: 3px; }
+            .progress-container { max-width: 350px; }
+            .logo-title-wrapper { gap: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .logo-image { width: 80px; }
+            .logo { font-size: 2.5rem; }
+            .description { font-size: 0.9rem; }
+            .tagline { font-size: 0.6rem; letter-spacing: 2px; }
+            .progress-container { max-width: 280px; }
+            .tip-content { font-size: 0.75rem; }
+            .logo-title-wrapper { gap: 0.75rem; flex-direction: column; }
+        }
+    </style>
+
+    <div class="loader-overlay" id="loaderOverlay">
+        <canvas id="particleCanvas"></canvas>
+        
+        <div class="loader-container" id="loader">
+            <div class="tagline">Welcome to the future of web development</div>
+            
+            <div class="logo-title-wrapper">
+                <img src="https://zetatk.org/zetatklogo.png" alt="Zetatk Logo" class="logo-image" onerror="this.style.display='none'">
+                <h1 class="logo">Zetatk</h1>
+            </div>
+            
+            <p class="description">
+                An advanced, low-overhead digital production matrix engineered for creators. 
+                Building open-source solutions across frameworks, digital playgrounds, and optimization workflows.
+            </p>
+
+            <div class="loading-wrapper">
+                <div class="loading-text" id="loadingText">
+                    Initializing matrix<span class="loading-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-percentage" id="progressText">0%</div>
+            </div>
+
+            <div class="tips-container">
+                <div class="tip-label">💡 Developer Tip</div>
+                <div class="tip-box" id="tipBox">
+                    <div class="tip-content" id="tipContent">Loading tip...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tips = [
+            "Use CSS Grid for complex layouts - it's more powerful than Flexbox for 2D arrangements.",
+            "Debounce your event listeners to improve performance on scroll and resize events.",
+            "Always use semantic HTML elements - they improve accessibility and SEO automatically.",
+            "Lazy load images below the fold using loading='lazy' attribute for faster initial page loads.",
+            "Use CSS custom properties (variables) for consistent theming and easier maintenance.",
+            "Minimize DOM reflows by batching your DOM reads and writes separately.",
+            "Use requestAnimationFrame for smooth animations instead of setTimeout or setInterval.",
+            "Implement proper error boundaries in your apps to prevent entire UI crashes.",
+            "Use Web Workers for heavy computations to keep the main thread responsive.",
+            "Optimize images with modern formats like WebP and AVIF for 25-35% smaller file sizes.",
+            "Use CSS containment (contain property) to isolate layout calculations and boost performance.",
+            "Preload critical resources with <link rel='preload'> to prioritize important assets.",
+            "Use Intersection Observer API instead of scroll events for viewport detection.",
+            "Implement service workers for offline functionality and faster repeat visits.",
+            "Use passive event listeners for scroll and touch events to improve scrolling performance.",
+            "Minimize third-party scripts - each one adds latency and potential security risks.",
+            "Use CSS will-change sparingly to hint browser optimizations for animations.",
+            "Implement proper caching strategies with Cache-Control headers for static assets.",
+            "Use tree shaking in your build process to eliminate unused code automatically.",
+            "Prefer const and let over var - they have block scope and prevent hoisting issues.",
+            "Use async/await instead of promise chains for cleaner, more readable asynchronous code.",
+            "Implement proper form validation on both client and server sides for security.",
+            "Use CSS clamp() for responsive typography that scales smoothly between breakpoints.",
+            "Optimize your critical rendering path by inlining critical CSS and deferring non-critical JS.",
+            "Use the Content Security Policy (CSP) header to prevent XSS attacks.",
+            "Implement proper ARIA labels and roles for better screen reader compatibility.",
+            "Use CSS subgrid when available for better nested grid alignment control.",
+            "Minimize layout thrashing by reading all DOM values before making any changes.",
+            "Use WebP images with JPEG/PNG fallbacks for optimal browser compatibility.",
+            "Implement proper focus management for keyboard navigation and accessibility.",
+            "Use CSS aspect-ratio property instead of padding hacks for responsive media.",
+            "Compress your JavaScript with terser or esbuild for smaller bundle sizes.",
+            "Use the prefers-reduced-motion media query to respect user motion preferences.",
+            "Implement proper meta tags for social media sharing (Open Graph, Twitter Cards).",
+            "Use CSS :has() selector for parent selection - it's a game changer for styling.",
+            "Optimize your fonts by using font-display: swap and preloading critical fonts.",
+            "Use the Performance API to measure and monitor real user metrics.",
+            "Implement proper error logging and monitoring in production environments.",
+            "Use CSS container queries for component-based responsive design.",
+            "Minimize re-renders in React/Vue by using proper memoization techniques.",
+            "Use the View Transitions API for smooth page transitions in modern browsers.",
+            "Implement proper loading states and skeleton screens for better UX.",
+            "Use CSS @layer for better specificity management in large stylesheets.",
+            "Optimize your database queries and use proper indexing for faster backends.",
+            "Use the Web Vitals metrics (LCP, FID, CLS) to measure user experience.",
+            "Implement proper rate limiting on your APIs to prevent abuse.",
+            "Use CSS scroll-snap for smooth, native-like scrolling experiences.",
+            "Minimize your dependency tree - each package adds weight and potential vulnerabilities.",
+            "Use the Broadcast Channel API for cross-tab communication in web apps.",
+            "Implement proper TypeScript types for better code quality and developer experience."
+        ];
+
+        let currentTipIndex = 0;
+        const tipContent = document.getElementById('tipContent');
+
+        function getRandomTip() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * tips.length);
+            } while (newIndex === currentTipIndex && tips.length > 1);
+            currentTipIndex = newIndex;
+            return tips[currentTipIndex];
+        }
+
+        function showRandomTip() {
+            tipContent.style.opacity = '0';
+            setTimeout(() => {
+                tipContent.textContent = getRandomTip();
+                tipContent.style.opacity = '1';
+            }, 200);
+        }
+
+        document.addEventListener('click', showRandomTip);
+        tipContent.style.transition = 'opacity 0.2s ease';
+        showRandomTip();
+
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let mouse = { x: null, y: null };
+        let animationId;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+        window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 30) + 1;
+                this.color = Math.random() > 0.5 ? '#00d4ff' : '#00a8ff';
+            }
+            update() {
+                if (mouse.x != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let maxDistance = 150;
+                    let force = (maxDistance - distance) / maxDistance;
+                    let directionX = forceDirectionX * force * this.density * 0.5;
+                    let directionY = forceDirectionY * force * this.density * 0.5;
+                    if (distance < maxDistance) {
+                        this.x -= directionX;
+                        this.y -= directionY;
+                    } else {
+                        if (this.x !== this.baseX) { let dx = this.x - this.baseX; this.x -= dx / 10; }
+                        if (this.y !== this.baseY) { let dy = this.y - this.baseY; this.y -= dy / 10; }
+                    }
+                }
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+                if (!mouse.x) {
+                    if (this.x !== this.baseX) { let dx = this.x - this.baseX; this.x -= dx / 50; }
+                    if (this.y !== this.baseY) { let dy = this.y - this.baseY; this.y -= dy / 50; }
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+            }
+        }
+
+        function init() {
+            particles = [];
+            let numberOfParticles = Math.min((width * height) / 9000, 150);
+            for (let i = 0; i < numberOfParticles; i++) { particles.push(new Particle()); }
+        }
+
+        function connect() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let distance = ((particles[a].x - particles[b].x) ** 2) + ((particles[a].y - particles[b].y) ** 2);
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        let opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(0, 212, 255,' + opacityValue * 0.15 + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) { particles[i].update(); particles[i].draw(); }
+            connect();
+        }
+        init();
+        animate();
+
+        const statusMessages = [
+            "Initializing core engineering frameworks",
+            "Loading zero-dependency structures",
+            "Optimizing rendering grids",
+            "Calibrating hardware fluid engine",
+            "Establishing infinite use data access",
+            "Mounting digital production matrix"
+        ];
+
+        let progress = 0;
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const loadingText = document.getElementById('loadingText');
+        const loader = document.getElementById('loader');
+        const loaderOverlay = document.getElementById('loaderOverlay');
+
+        const loadingInterval = setInterval(() => {
+            const increment = Math.random() * 2 + 0.5;
+            progress = Math.min(progress + increment, 100);
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${Math.floor(progress)}%`;
+
+            const messageIndex = Math.min(Math.floor((progress / 100) * statusMessages.length), statusMessages.length - 1);
+            if (progress < 100) {
+                loadingText.innerHTML = `${statusMessages[messageIndex]}<span class="loading-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`;
+            }
+
+            if (progress >= 100) {
+                clearInterval(loadingInterval);
+                loadingText.innerHTML = 'Matrix initialized<span class="loading-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';
+                setTimeout(() => {
+                    loaderOverlay.classList.add('fade-out');
+                    cancelAnimationFrame(animationId);
+                    // Uncomment the line below to redirect when done:
+                    // setTimeout(() => { window.location.href = "/"; }, 800);
+                }, 500);
+            }
+        }, 50);
+    </script>
+</body>
+<body>
   <!-- ZETATK OFFICIAL SYSTEM SPLASH SCREEN -->
   <div id="zetatk-splash-screen">
     <div class="splash-container">
